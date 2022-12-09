@@ -12,6 +12,9 @@ import Connections from './screens/Connections';
 import EditProfileScreen from './screens/EditProfileScreen';
 import FromScreen from './screens/FromScreen';
 import ToScreen from './screens/ToScreen';
+import RegisterVehicleScreen from './screens/RegisterVehicleScreen';
+import RegisterDriverScreen from './screens/RegisterDriverScreen';
+import NavigationScreen from './screens/NavigationScreen';
 
 // Redux Store
 import {store} from './store';
@@ -92,6 +95,27 @@ export default function App() {
             <Stack.Screen
               name="ToScreen"
               component={ToScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="RegisterVehicleScreen"
+              component={RegisterVehicleScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="RegisterDriverScreen"
+              component={RegisterDriverScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="NavigationScreen"
+              component={NavigationScreen}
               options={{
                 headerShown: false,
               }}

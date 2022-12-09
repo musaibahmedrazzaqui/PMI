@@ -8,18 +8,24 @@ import {
   Touchable,
   withTheme,
 } from '@draftbit/ui';
-import tw from "twrnc";
-import { useNavigation } from "@react-navigation/native";
-import { Image, ImageBackground, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import tw from 'twrnc';
+import {useNavigation} from '@react-navigation/native';
+import {
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 const SettingsScreen = props => {
   const Navigation = useNavigation();
-  const { theme } = props;
+  const {theme} = props;
   return (
     <ScreenContainer
       style={styles.screenContainerJb}
       scrollable={true}
-      hasSafeArea={false}
-    >
+      hasSafeArea={false}>
       {/* <ImageBackground
         style={styles.imageBackgroundNb}
         source={Images.ErikmcleannTCtYYyVqSYunsplash}
@@ -28,8 +34,7 @@ const SettingsScreen = props => {
       <Container
         style={styles.containerEA}
         elevation={0}
-        useThemeGutterPadding={true}
-      >
+        useThemeGutterPadding={true}>
         {/* <Image
           style={StyleSheet.flatten([
             styles.imageA3,
@@ -40,22 +45,20 @@ const SettingsScreen = props => {
         /> */}
         <TouchableOpacity
           onPress={() => Navigation.navigate('HomeScreen')}
-          style={{ position: "absolute", top: -50, left: -30 }}
-        >
+          style={{position: 'absolute', top: -50, left: -30}}>
           <Image
             style={{
               height: 20,
               width: 20,
             }}
-            source={require("../assets/back.png")}
+            source={require('../assets/back.png')}
           />
-           </TouchableOpacity>
+        </TouchableOpacity>
         <Text
           style={StyleSheet.flatten([
             styles.textPr,
             theme.typography.headline3,
-          ])}
-        >
+          ])}>
           Musaib Ahmed
         </Text>
         {/* <Button style={styles.buttonP2}>
@@ -63,21 +66,21 @@ const SettingsScreen = props => {
         </Button> */}
         <TouchableOpacity
           style={styles.buttonP2}
-                   onPress={() => Navigation.navigate('EditProfileScreen')}
-                  
-                >
-                  <Text style={tw`bg-white text-[12px] m-1 text-center text-blue-600 font-bold py-2 w-30 px-2 border-[1px] border-blue-600 rounded-md`}>Edit Profile</Text>
-                </TouchableOpacity>
+          onPress={() => Navigation.navigate('EditProfileScreen')}>
+          <Text
+            style={tw`bg-white text-[12px] m-1 text-center text-blue-600 font-bold py-2 w-30 px-2 border-[1px] border-blue-600 rounded-md`}>
+            Edit Profile
+          </Text>
+        </TouchableOpacity>
       </Container>
       <Container useThemeGutterPadding={true} elevation={0}>
         <Touchable
           style={StyleSheet.flatten([
             styles.touchableOk,
-            { borderColor: theme.colors.divider },
-          ])}
-        >
+            {borderColor: theme.colors.divider},
+          ])}>
           <View style={styles.viewKs}>
-            <Text style={theme.typography.body1}>Privacy Settings</Text>
+            <Text style={theme.typography.body1}>See your Vehicles</Text>
             <Icon
               style={styles.iconFE}
               size={24}
@@ -89,9 +92,8 @@ const SettingsScreen = props => {
         <Touchable
           style={StyleSheet.flatten([
             styles.touchableOm,
-            { borderColor: theme.colors.divider },
-          ])}
-        >
+            {borderColor: theme.colors.divider},
+          ])}>
           <View style={styles.viewYR}>
             <Text style={theme.typography.body1}>Notifications</Text>
             <Icon
@@ -105,9 +107,8 @@ const SettingsScreen = props => {
         <Touchable
           style={StyleSheet.flatten([
             styles.touchableBp,
-            { borderColor: theme.colors.divider },
-          ])}
-        >
+            {borderColor: theme.colors.divider},
+          ])}>
           <View style={styles.viewS1}>
             <Text style={theme.typography.body1}>Ride History</Text>
             <Icon
@@ -121,9 +122,8 @@ const SettingsScreen = props => {
         <Touchable
           style={StyleSheet.flatten([
             styles.touchableJg,
-            { borderColor: theme.colors.divider },
-          ])}
-        >
+            {borderColor: theme.colors.divider},
+          ])}>
           <View style={styles.viewAl}>
             <Text style={theme.typography.body1}>Payment Details</Text>
             <Icon
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     alignSelf: 'center',
     width: '50%',
-    color: '#0000'
+    color: '#0000',
   },
   touchableOm: {
     paddingBottom: 12,

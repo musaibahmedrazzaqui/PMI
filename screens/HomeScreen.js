@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Image,
+  TouchableOpacity,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -10,6 +10,7 @@ import {
 import tw from 'twrnc';
 import logo from '../assets/poollogo.png';
 import NavOptions from '../components/NavOptions';
+import SecondNavOptions from '../components/SecondNavOptions';
 import {Icon} from 'react-native-elements';
 
 // Google Places
@@ -73,7 +74,13 @@ const HomeScreen = () => {
             debounce={300}
           />
           <NavOptions />
-          <LocationOptions />
+          <SecondNavOptions />
+          {/* <LocationOptions /> */}
+          {/* <TouchableOpacity onPress={onFromPressed}>
+            <View style={styles.container_touchable} margin="2%">
+              <Text style={styles.description_two}>From where?</Text>
+            </View>
+          </TouchableOpacity> */}
           <ReferOptions />
         </View>
       </SafeAreaView>

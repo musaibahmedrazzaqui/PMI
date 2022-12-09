@@ -12,6 +12,8 @@ target 'PMI' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-uuid-generator', :path => '../node_modules/react-native-uuid-generator'
+
   target 'PMITests' do
     inherit! :complete
     # Pods for testing
