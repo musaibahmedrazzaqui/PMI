@@ -8,7 +8,7 @@ const data = [
     id: '1',
     title: 'View Ride Requests',
     image: require('../assets/requests.png'),
-    screen: 'RegisterDriverScreen',
+    screen: 'ListRideRequestsScreen',
   },
 ];
 

@@ -15,7 +15,7 @@ import ToScreen from './screens/ToScreen';
 import RegisterVehicleScreen from './screens/RegisterVehicleScreen';
 import RegisterDriverScreen from './screens/RegisterDriverScreen';
 import NavigationScreen from './screens/NavigationScreen';
-
+import ListRideRequestsScreen from './screens/ListRideRequestsScreen';
 // Redux Store
 import {store} from './store';
 
@@ -119,6 +119,11 @@ export default function App() {
               options={{
                 headerShown: false,
               }}
+            />
+            <Stack.Screen
+              name="ListRideRequestsScreen"
+              component={ListRideRequestsScreen}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="EditProfileScreen"
