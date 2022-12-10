@@ -12,11 +12,13 @@ import {theme} from '../core/theme';
 // import { Dropdown } from "react-native-material-dropdown";
 import {SelectList} from 'react-native-dropdown-select-list';
 
-export default function FoodScreen({navigation}) {
-  const [from, setFrom] = useState({value: '', error: ''});
+export default function FoodScreen({navigation, route}) {
+  const [from, setFrom] = useState('true');
   const [to, setTo] = useState({value: '', error: ''});
+  const [seats, setSeats] = useState({value: '', error: ''});
   const [fare, setFare] = useState({value: '', error: ''});
   const [selected, setSelected] = React.useState('');
+  // const {navigate} = this.props.navigation;
   let carData = [
     {
       value: 'Suzuki Alto',
@@ -46,9 +48,10 @@ export default function FoodScreen({navigation}) {
     //   setPassword({ ...password, error: passwordError });
     //   return;
     // }
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'HomeScreen'}],
+    setFrom('true');
+    navigation.navigate({
+      name: 'HomeScreen',
+      params: {post: from},
     });
   };
 
@@ -82,7 +85,12 @@ export default function FoodScreen({navigation}) {
         value={fare.value}
         onChangeText={text => setFare({value: text, error: ''})}
       />
-
+      <TextInput
+        label="Number of maximum passengers"
+        returnKeyType="done"
+        value={seats.value}
+        onChangeText={text => setSeats({value: text, error: ''})}
+      />
       <Button mode="contained" onPress={onLoginPressed}>
         Save
       </Button>

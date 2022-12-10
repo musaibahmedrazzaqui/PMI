@@ -1,12 +1,12 @@
-import {Text, View} from 'react-native';
-import React, {Component} from 'react';
+import {View, Text} from 'react-native';
+import React from 'react';
 
-export default class FareNegotiation extends Component {
-  render() {
-    return (
-      <View>
-        <Text>FareNegotiation</Text>
-      </View>
-    );
-  }
-}
+const FareNegotiation = () => {
+  return (
+    <View>
+      <Text>FareNegotiation</Text>
+    </View>
+  );
+};
+
+export default FareNegotiation;

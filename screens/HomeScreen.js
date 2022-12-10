@@ -11,6 +11,7 @@ import tw from 'twrnc';
 import logo from '../assets/poollogo.png';
 import NavOptions from '../components/NavOptions';
 import SecondNavOptions from '../components/SecondNavOptions';
+import IncomingRide from '../components/IncomingRide';
 import {Icon} from 'react-native-elements';
 
 // Google Places
@@ -22,7 +23,7 @@ import ReferOptions from '../components/ReferOptions';
 
 import {useNavigation} from '@react-navigation/native';
 
-const HomeScreen = () => {
+function HomeScreen({navigation, route}) {
   const Navigation = useNavigation();
   return (
     <ScrollView>
@@ -74,19 +75,16 @@ const HomeScreen = () => {
             debounce={300}
           />
           <NavOptions />
+          {route.params?.post && <IncomingRide />}
+
           <SecondNavOptions />
-          {/* <LocationOptions /> */}
-          {/* <TouchableOpacity onPress={onFromPressed}>
-            <View style={styles.container_touchable} margin="2%">
-              <Text style={styles.description_two}>From where?</Text>
-            </View>
-          </TouchableOpacity> */}
+
           <ReferOptions />
         </View>
       </SafeAreaView>
     </ScrollView>
   );
-};
+}
 
 export default HomeScreen;
 
