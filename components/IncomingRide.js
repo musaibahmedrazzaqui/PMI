@@ -18,7 +18,7 @@ const navOptions = () => {
   return (
     <View>
       <Text style={tw`m-2 font-bold text-4`}>
-        View the incoming ride requests for the ride you created!
+        View the incoming ride requests for the ride you just created!
       </Text>
       <FlatList
         data={data}

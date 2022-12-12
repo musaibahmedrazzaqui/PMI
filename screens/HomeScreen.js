@@ -1,24 +1,12 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import tw from 'twrnc';
-import logo from '../assets/poollogo.png';
+
 import NavOptions from '../components/NavOptions';
 import SecondNavOptions from '../components/SecondNavOptions';
 import IncomingRide from '../components/IncomingRide';
 import {Icon} from 'react-native-elements';
 
-// Google Places
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {GOOGLE_MAPS_APIKEY} from '@env';
-import {selectDestination, setDestination, setOrigin} from '../slices/navSlice';
-import LocationOptions from '../components/LocationOptions';
 import ReferOptions from '../components/ReferOptions';
 
 import {useNavigation} from '@react-navigation/native';
@@ -48,35 +36,10 @@ function HomeScreen({navigation, route}) {
               onPress={() => Navigation.navigate('StartScreen')}
             />
           </View>
-          <GooglePlacesAutocomplete
-            styles={{
-              container: {
-                flex: 0,
-              },
-              textInput: {
-                fontSize: 14,
-                borderColor: 'gray',
-                borderWidth: 1,
-                margin: 8,
-              },
-            }}
-            onPress={(data, details = null) => {
-              console.log(data, details);
-            }}
-            fetchDetails={true}
-            // enablePoweredByContainer={false}
-            minLength={2}
-            query={{
-              key: 'AIzaSyC0pi36NCYygUaAbn3wQrrmjtairvWDxGY',
-              language: 'en',
-            }}
-            placeholder="Where are you now?"
-            nearbyPlacesAPI="GooglePlacesSearch"
-            debounce={300}
-          />
+
           <NavOptions />
           {route.params?.post && <IncomingRide />}
-
+          {/* //Check if driver is registered only then show this component */}
           <SecondNavOptions />
 
           <ReferOptions />

@@ -1,10 +1,10 @@
-import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React from 'react';
+import {StyleSheet, View, Text} from 'react-native';
 
 const ReferScreen = () => {
   return (
     <View>
-      <Text>Referralk herey</Text>
+      <Text>Referral here</Text>
     </View>
   );
 };
