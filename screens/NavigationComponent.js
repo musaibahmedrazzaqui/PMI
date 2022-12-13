@@ -2,10 +2,11 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import MapboxNavigation from '@homee/react-native-mapbox-navigation';
+import {useNavigation} from '@react-navigation/native';
 
 const Navigation = props => {
   const {origin, destination} = props;
-
+  const Navigat = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>
@@ -30,9 +31,11 @@ const Navigation = props => {
           onArrive={() => {
             // eslint-disable-next-line no-alert
             alert('You have reached your destination');
+            Navigat.navigate('HomeScreen');
           }}
           onCancelNavigation={event => {
             alert('Cancelled navigation event');
+            Navigat.navigate('ListRideRequestsScreen');
           }}
         />
       </View>

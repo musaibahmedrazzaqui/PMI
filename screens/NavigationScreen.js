@@ -10,11 +10,15 @@ import React, {useEffect} from 'react';
 import {SafeAreaView, useColorScheme} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import NavigationComponent from './NavigationComponent';
+
 import {PermissionsAndroid} from 'react-native';
 
-const NavigationScreen = () => {
+const NavigationScreen = ({navigation, route}) => {
   const isDarkMode = useColorScheme() === 'dark';
-
+  const lat = parseFloat(route.params.lat);
+  const long = parseFloat(route.params.long);
+  const currLat = parseFloat(route.params.currLat);
+  const currLong = parseFloat(route.params.currLong);
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1,
@@ -41,9 +45,10 @@ const NavigationScreen = () => {
   return (
     <SafeAreaView style={backgroundStyle}>
       <NavigationComponent
-        origin={[67.11371729659392, 24.95088649615777]}
-        destination={[67.10380385210678, 24.936450024471096]}
+        origin={[currLong, currLat]}
+        destination={[long, lat]}
       />
+      {/* {console.log(currLongitude + ',' + currLatitude)} */}
     </SafeAreaView>
   );
 };
