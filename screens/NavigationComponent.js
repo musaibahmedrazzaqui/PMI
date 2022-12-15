@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: '100%',
+    height: '50%',
   },
   mapContainer: {
     flex: 1,

@@ -16,6 +16,7 @@ import RegisterVehicleScreen from './screens/RegisterVehicleScreen';
 import RegisterDriverScreen from './screens/RegisterDriverScreen';
 import NavigationScreen from './screens/NavigationScreen';
 import ListRideRequestsScreen from './screens/ListRideRequestsScreen';
+import FareNegotiation from './screens/FareNegotiation';
 // Redux Store
 import {store} from './store';
 
@@ -88,6 +89,13 @@ export default function App() {
             <Stack.Screen
               name="FromScreen"
               component={FromScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="FareNegotiation"
+              component={FareNegotiation}
               options={{
                 headerShown: false,
               }}

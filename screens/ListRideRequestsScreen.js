@@ -16,8 +16,8 @@ const availableRides = [
     id: 2,
     name: 'Jane Doe',
     fare: 'Toyota Camry',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
+    long: '67.0977780221569',
+    lat: '24.875933788119013',
   },
   {
     id: 3,

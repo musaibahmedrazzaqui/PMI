@@ -8696,6 +8696,11 @@
   dependencies:
     "lodash" "^4.17.15"
 
+"react-native-restart@^0.0.24":
+  "integrity" "sha512-pvJNU3NwQk6bCG2gOWcQpZ4IxhtELB0K9gzmtixfsaTFbW1UXXHkJNjk1kHazcbH5hrD7QbUkR63fsAVh8X4VQ=="
+  "resolved" "https://registry.npmjs.org/react-native-restart/-/react-native-restart-0.0.24.tgz"
+  "version" "0.0.24"
+
 "react-native-root-siblings@3.1.7":
   "integrity" "sha512-KYnDyEOR0YSt6WBY3zpF2OOC6AED7dOhdKZamOJaEmBVl8LO3bzvqu39AToH4G3fOspAJVtop7MjH7bzUxtUFQ=="
   "resolved" "https://registry.npmjs.org/react-native-root-siblings/-/react-native-root-siblings-3.1.7.tgz"
