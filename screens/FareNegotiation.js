@@ -52,9 +52,9 @@ export default function FareNegotiation({navigation, route}) {
               //   },
               // });
             }}>
-            Accept
+            Send request
           </Button>
-          <Button style={{color: 'red'}}>Reject</Button>
+          <Button style={{color: 'red'}}></Button>
         </Card.Actions>
       </Card>
     </Background>
