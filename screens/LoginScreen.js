@@ -15,6 +15,7 @@ import {passwordValidator} from '../helpers/passwordValidator';
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState({value: '', error: ''});
   const [password, setPassword] = useState({value: '', error: ''});
+  const [userid, setUid] = useState('');
 
   const onLoginPressed = () => {
     const emailError = emailValidator(email.value);
@@ -25,17 +26,22 @@ export default function LoginScreen({navigation}) {
       return;
     }
     axios
-      .post('http://192.168.1.6:3002/users/login', {
+      .post('http://10.0.2.2:3002/users/login', {
         emailID: email.value,
         password: password.value,
       })
       .then(res => {
-        // console.log(res);
+        var uid = res.data.data[0].userID;
+        // console.log(userid);
+        // setUid(obj[0].userID);
         if (res.data.error === 0) {
           alert('Sucessfully logged in!');
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'HomeScreen'}],
+          // console.log(userid);
+          navigation.navigate({
+            name: 'HomeScreen',
+            params: {
+              userid: uid,
+            },
           });
         } else if (res.data.error == 1) {
           alert('Email and passwords do not match');

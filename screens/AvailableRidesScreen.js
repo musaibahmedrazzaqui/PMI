@@ -212,7 +212,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Background from '../components/Background';
 import BackButton from '../components/BackButton';
 import RNRestart from 'react-native-restart';
-
+import axios from 'axios';
 // import FareNegotiation from './FareNegotiation';
 
 const availableRides = [
@@ -261,12 +261,38 @@ const availableRides = [
 const AvailableRidesScreen = ({navigation, route}) => {
   const [rides, setRides] = useState(availableRides);
   const [show, setShow] = useState(false);
+  const [uid, setUid] = useState(route.params?.userid);
+  const [did, setdId] = useState();
   const [latitude, setlatitude] = React.useState('0.0');
   const [longitude, setlongitude] = React.useState('0.0');
   useEffect(() => {
     Geolocation.getCurrentPosition(info => {
       setlatitude(info.coords.latitude);
       setlongitude(info.coords.longitude);
+    });
+    axios.get(`http://10.0.2.2:3002/driver/${uid}`).then(res => {
+      console.log('userid', uid);
+      const response = res.data.error;
+
+      console.log(response);
+      if (response == 0) {
+        console.log('driverid' + res.data.data[0].DriverID);
+        setdId(res.data.data[0].DriverID);
+        let drid = res.data.data[0].DriverID;
+        // setCheck(true);
+        axios.get(`http://10.0.2.2:3002/rides/${drid}`).then(res => {
+          console.log('DID ', drid);
+          const response = res.data;
+          if (response.error == 0) {
+            console.log(response.data);
+          } else {
+            console.log('error caught');
+          }
+        });
+      } else {
+        console.log('error');
+        // setCheck(false);
+      }
     });
   }, []);
   const getLocation = async data => {

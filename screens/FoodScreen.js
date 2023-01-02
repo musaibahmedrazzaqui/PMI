@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {TouchableOpacity, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
-
+import {fieldValidator} from '../helpers/fieldValidator';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Header from '../components/Header';
@@ -9,15 +9,36 @@ import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import BackButton from '../components/BackButton';
 import {theme} from '../core/theme';
+import axios from 'axios';
 // import { Dropdown } from "react-native-material-dropdown";
+import {Picker} from '@react-native-picker/picker';
 import {SelectList} from 'react-native-dropdown-select-list';
-
+const getCardata = response => {
+  // console.log('hereeee', response.data);
+  let carData = response.data;
+  // console.log('Car data', carData);
+  const keys = Object.keys(carData);
+  console.log('Keys', keys);
+  return keys.map(key => {
+    let caData = carData[key];
+    // console.log(caData);
+    return {key: key, ...caData};
+  });
+};
 export default function FoodScreen({navigation, route}) {
   const [from, setFrom] = useState('true');
+  const [did, setdId] = useState();
   const [to, setTo] = useState({value: '', error: ''});
   const [seats, setSeats] = useState({value: '', error: ''});
   const [fare, setFare] = useState({value: '', error: ''});
+  const [vehicle, setVehicle] = useState({value: '', error: ''});
   const [selected, setSelected] = React.useState('');
+  const [uid, setUid] = useState(route.params?.userid);
+  const [cars, setCars] = useState([]);
+  const [fromlatitude, setfLatitude] = useState(route.params?.fromlatitude);
+  const [fromlongitude, setfLongitude] = useState(route.params?.fromlongitude);
+  const [tolatitude, settLatitude] = useState(route.params?.tolatitude);
+  const [tolongitude, settLongitude] = useState(route.params?.tolongitude);
   // const {navigate} = this.props.navigation;
   let carData = [
     {
@@ -30,16 +51,38 @@ export default function FoodScreen({navigation, route}) {
       value: 'Suzuki Wagon R',
     },
   ];
+  useEffect(() => {
+    axios.get(`http://10.0.2.2:3002/driver/${uid}`).then(res => {
+      const response = res.data;
+      // console.log(response.data[0].DriverID);
+      setdId(response.data[0].DriverID);
+    });
+    axios.get(`http://10.0.2.2:3002/vehicle/2`).then(res => {
+      const response = res.data;
+      // console.log(res.data);
+      setCars(response.data);
+      //  setdId(response.data[0].DriverID);
+    });
+    console.log('FROM' + fromlatitude + '   ' + fromlongitude);
+
+    console.log('TO' + tolatitude + '   ' + tolongitude);
+    // console.log(route.params?.userid);
+  }, []);
+
   const onFromPressed = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'FromScreen'}],
+    navigation.navigate({
+      name: 'FromScreen',
+      params: {
+        userid: uid,
+      },
     });
   };
   const onToPressed = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'ToScreen'}],
+    navigation.navigate({
+      name: 'ToScreen',
+      params: {
+        userid: uid,
+      },
     });
   };
   const onLoginPressed = () => {
@@ -48,10 +91,61 @@ export default function FoodScreen({navigation, route}) {
     //   setPassword({ ...password, error: passwordError });
     //   return;
     // }
-    setFrom('true');
-    navigation.navigate({
-      name: 'HomeScreen',
-      params: {post: from},
+    console.log(cars);
+    console.log('FROM' + fromlatitude + '   ' + fromlongitude);
+
+    console.log('TO' + tolatitude + '   ' + tolongitude);
+    const fieldError = fieldValidator(fare.value);
+    const fieldError2 = fieldValidator(seats.value);
+    if (fieldError || fieldError2) {
+      setFare({...fare, error: fieldError});
+      setSeats({...seats, error: fieldError2});
+      return;
+    }
+    axios
+      .post('http://10.0.2.2:3002/rides/addnew', {
+        DriverID: did,
+        numberOfPeople: seats.value,
+        fareEntered: fare.value,
+        vehicleID: vehicle.value,
+      })
+      .then(() => {
+        alert('Sucessfully registered!');
+        console.log(
+          'did',
+          did,
+          'seats',
+          seats.value,
+          'fare',
+          fare.value,
+          'vehcile',
+          vehicle.value,
+        );
+        navigation.navigate({
+          name: 'HomeScreen',
+          params: {
+            userid: uid,
+          },
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    alert('Thankyou for registering as a Driver!');
+    axios.get(`http://10.0.2.2:3002/rides/${did}`).then(res => {
+      console.log('DID', did);
+      const response = res.data.error;
+      if (response == 0) {
+        setFrom('true');
+        navigation.navigate({
+          name: 'HomeScreen',
+          params: {post: from},
+        });
+      } else {
+        navigation.navigate({
+          name: 'HomeScreen',
+        });
+      }
     });
   };
 
@@ -72,24 +166,41 @@ export default function FoodScreen({navigation, route}) {
       </TouchableOpacity>
 
       <Text style={styles.description}>Which vehicle will you take today?</Text>
-      <SelectList
-        style={{minWidth: '15rem'}}
-        search="false"
-        setSelected={val => setSelected(val)}
-        data={carData}
-        save="value"
-      />
+      {/* {getVehicleInfo()} */}
+
+      <Text style={styles.description}>Registered Vehicles:</Text>
+      {cars.map(user => (
+        <View key={user.vehicleID}>
+          <TouchableOpacity
+            onPress={() => setVehicle({value: user.vehicleID, error: ''})}>
+            <Text>{user.Manufacturer + ' ' + user.Model}</Text>
+          </TouchableOpacity>
+          {/* <Text>{user.Manufactuer}</Text> */}
+        </View>
+      ))}
+      {/* <TextInput
+        label="Enter Vehicle (one of shown above)"
+        returnKeyType="done"
+        value={vehicle.value}
+        onChangeText={text => setVehicle({value: text, error: ''})}
+        error={!!vehicle.error}
+        errorText={vehicle.error}
+      /> */}
       <TextInput
         label="Expected fare per seat"
         returnKeyType="done"
         value={fare.value}
         onChangeText={text => setFare({value: text, error: ''})}
+        error={!!fare.error}
+        errorText={fare.error}
       />
       <TextInput
         label="Number of maximum passengers"
         returnKeyType="done"
         value={seats.value}
         onChangeText={text => setSeats({value: text, error: ''})}
+        error={!!seats.error}
+        errorText={seats.error}
       />
       <Button mode="contained" onPress={onLoginPressed}>
         Save

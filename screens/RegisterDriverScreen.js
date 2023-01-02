@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useEffect} from 'react';
 import {TouchableOpacity, StyleSheet, View} from 'react-native';
-
+import {fieldValidator} from '../helpers/fieldValidator';
 import UUIDGenerator from 'react-native-uuid-generator';
 import Background from '../components/Background';
 
@@ -10,23 +10,58 @@ import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import BackButton from '../components/BackButton';
 import {theme} from '../core/theme';
+import axios from 'axios';
 
-export default function FoodScreen({navigation}) {
+export default function FoodScreen({navigation, route}) {
   const [email, setEmail] = useState({value: '', error: ''});
+  const [uid, setUid] = useState();
   const [cnic, setCnic] = useState({value: '', error: ''});
   const [license, setLicense] = useState({value: '', error: ''});
   const [driverid, setDriverid] = useState('');
+  console.log(route.params.userid);
   useEffect(() => {
     UUIDGenerator.getRandomUUID().then(uuid => {
       setDriverid(uuid);
     });
+    if (route.params?.userid) {
+      setUid(route.params.userid);
+    } else {
+      setUid(0);
+    }
   }, []);
   const onSavePressed = () => {
     //Validate email Id through call at users table
     //Driver ID == CNIC + email
     // let uuid = "";
+    console.log(uid);
+    const fieldError = fieldValidator(cnic.value);
+    const fieldError2 = fieldValidator(license.value);
+    if (fieldError || fieldError2) {
+      setCnic({...cnic, error: fieldError});
+      setLicense({...license, error: fieldError2});
+      return;
+    }
+    axios
+      .post('http://10.0.2.2:3002/driver/register', {
+        DriverID: driverid,
+        DriverUserID: uid,
+        CNIC: cnic.value,
+        LicenseNumber: license.value,
+      })
+      .then(() => {
+        alert('Sucessfully registered!');
+        navigation.navigate({
+          name: 'HomeScreen',
+          params: {
+            userid: uid,
+          },
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     alert('Thankyou for registering as a Driver!');
-    console.log(driverid);
+    console.log(driverid, uid, cnic.value, license.value);
     navigation.reset({
       index: 0,
       routes: [{name: 'HomeScreen'}],
@@ -43,25 +78,38 @@ export default function FoodScreen({navigation}) {
     <Background>
       <BackButton goBack={navigation.goBack} />
       {/* <Logo /> */}
-      <Header>Register your vehicle </Header>
+      <Header>Register As a Driver </Header>
 
       <TextInput
         label="Enter registered email ID"
-        returnKeyType="done"
+        // returnKeyType="done"
         value={email.value}
         onChangeText={text => setEmail({value: text, error: ''})}
+        returnKeyType="next"
+        // value={email.value}
+        // onChangeText={text => setEmail({value: text, error: ''})}
+        error={!!email.error}
+        errorText={email.error}
+        autoCapitalize="none"
+        autoCompleteType="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
       />
       <TextInput
         label="Enter CNIC Number"
-        returnKeyType="done"
+        returnKeyType="next"
         value={cnic.value}
         onChangeText={text => setCnic({value: text, error: ''})}
+        error={!!cnic.error}
+        errorText={cnic.error}
       />
       <TextInput
         label="Enter License Number"
         returnKeyType="done"
         value={license.value}
         onChangeText={text => setLicense({value: text, error: ''})}
+        error={!!license.error}
+        errorText={license.error}
       />
 
       <Button mode="contained" onPress={onSavePressed}>

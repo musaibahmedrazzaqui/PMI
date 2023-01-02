@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import tw from 'twrnc';
 
@@ -10,9 +10,45 @@ import {Icon} from 'react-native-elements';
 import ReferOptions from '../components/ReferOptions';
 
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 
 function HomeScreen({navigation, route}) {
   const Navigation = useNavigation();
+  const [check, setCheck] = useState(false);
+  const [checkone, setCheckone] = useState(false);
+  const [userID, setUserID] = useState('');
+  const [did, setdId] = useState();
+  useEffect(() => {
+    setUserID(route.params?.userid);
+    axios
+      .get(`http://10.0.2.2:3002/driver/${route.params?.userid}`)
+      .then(res => {
+        console.log('userid', userID);
+        const response = res.data.error;
+
+        console.log(response);
+        if (response == 0) {
+          console.log('driverid' + res.data.data[0].DriverID);
+          setdId(res.data.data[0].DriverID);
+          let drid = res.data.data[0].DriverID;
+          setCheck(true);
+          axios.get(`http://10.0.2.2:3002/rides/${drid}`).then(res => {
+            console.log('DID ', drid);
+            const response = res.data.error;
+            if (response == 0) {
+              setCheckone(true);
+            } else {
+              setCheckone(false);
+            }
+          });
+        } else {
+          setdId(0);
+          setCheck(false);
+        }
+      });
+
+    // console.log(route.params?.userid);
+  }, []);
   return (
     <ScrollView>
       <SafeAreaView style={tw`bg-white h-full`}>
@@ -36,11 +72,12 @@ function HomeScreen({navigation, route}) {
               onPress={() => Navigation.navigate('StartScreen')}
             />
           </View>
-
-          <NavOptions />
-          {route.params?.post && <IncomingRide />}
+          {console.log(userID)}
+          <NavOptions uid={userID} />
+          {checkone === true && <IncomingRide />}
           {/* //Check if driver is registered only then show this component */}
-          <SecondNavOptions />
+
+          {check === false && <SecondNavOptions uid={userID} />}
 
           <ReferOptions />
         </View>

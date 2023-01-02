@@ -12,7 +12,7 @@ import {theme} from '../core/theme';
 // import { Dropdown } from "react-native-material-dropdown";
 import {SelectList} from 'react-native-dropdown-select-list';
 
-export default function FoodScreen({navigation}) {
+export default function RegisterVehicleScreen({navigation}) {
   const [vehicle, setVehicle] = useState({value: '', error: ''});
   const [engine, setEngine] = useState({value: '', error: ''});
   const [province, setProvince] = useState({value: '', error: ''});

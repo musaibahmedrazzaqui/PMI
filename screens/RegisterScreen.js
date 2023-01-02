@@ -31,12 +31,16 @@ export default function RegisterScreen({navigation}) {
     //   return
     // }
     axios
-      .post('http://192.168.1.6:3002/users/register', {
+      .post('http://10.0.2.2:3002/users/register', {
         firstName: firstName.value,
         lastName: lastName.value,
+        instituteID: 1,
+        levelID: 1,
         gender: gender.value,
         emailID: email.value,
         password: password.value,
+        profileImageUrl: 's',
+        dateJoined: '2022-12-22',
       })
       .then(() => {
         alert('Sucessfully submitted!');

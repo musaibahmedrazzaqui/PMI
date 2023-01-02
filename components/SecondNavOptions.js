@@ -12,9 +12,16 @@ const data = [
   },
 ];
 
-const navOptions = () => {
-  const Navigation = useNavigation();
+// const SecondNavOptions = () => {
+//   return (
+//     <div>SecondNavOptions</div>
+//   )
+// }
 
+// export default SecondNavOptions
+const navOptions = ({uid}) => {
+  const Navigation = useNavigation();
+  console.log(uid);
   return (
     <View>
       <Text style={tw`m-2 font-bold text-4`}>
@@ -27,7 +34,14 @@ const navOptions = () => {
         horizontal
         renderItem={({item}) => (
           <TouchableOpacity
-            onPress={() => Navigation.navigate(item.screen)}
+            onPress={() =>
+              Navigation.navigate({
+                name: item.screen,
+                params: {
+                  userid: uid,
+                },
+              })
+            }
             style={tw`p-3 m-3 w-85 rounded-sm shadow-sm `}>
             <View>
               <Image

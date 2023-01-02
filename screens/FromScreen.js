@@ -18,9 +18,9 @@ MapboxGL.setAccessToken(
   'pk.eyJ1IjoibXVzYWliYWhtZWRyYXp6YXF1aSIsImEiOiJjbGFud3ZlemEwMGRiM25sc2dlbW1vMmRxIn0.426C1RaWyDpDv9XJ8Odigg',
 );
 
-const FromScreen = () => {
-  const [latitude, setlatitude] = React.useState('0.0');
-  const [longitude, setlongitude] = React.useState('0.0');
+const FromScreen = ({navigation, route}) => {
+  const [latitude, setlatitude] = React.useState(0.0);
+  const [longitude, setlongitude] = React.useState(0.0);
   useEffect(() => {
     Geolocation.getCurrentPosition(info => {
       setlatitude(info.coords.latitude);
@@ -50,9 +50,10 @@ const FromScreen = () => {
   const onButtonPressed = () => {
     //console.log(text);
     const sLower = textTwo.toLowerCase();
-    console.log(sLower);
+    console.log('slower', sLower);
     let srcCoord = null;
     srcCoord = getCoordinates(sLower);
+    console.log('srcCoord', srcCoord);
   };
 
   const getCoordinates = async name => {
@@ -61,15 +62,16 @@ const FromScreen = () => {
     const req =
       'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
       name +
-      '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoibXVzYWliYWhtZWRyYXp6YXF1aSIsImEiOiJjbGFud3ZlemEwMGRiM25sc2dlbW1vMmRxIn0.426C1RaWyDpDv9XJ8Odigg';
+      '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw';
 
-    console.log(req);
+    console.log('req', req);
 
     let coord = null;
     let res = null;
 
     // axios.get
     try {
+      console.log('before axiosos');
       res = await axios.get(req);
       //console.log(await res);
     } catch (e) {
@@ -81,7 +83,7 @@ const FromScreen = () => {
     }
 
     const place = await res.data;
-    console.log(place);
+    console.log('place', place);
     if (!place.features.length) {
       // check whether the coordinates are returned for the Place
       console.log('features : ' + place.features);
@@ -92,7 +94,28 @@ const FromScreen = () => {
     setlatitude(latLng[1]);
     setlongitude(latLng[0]);
     coord = {lat: latLng[1], lng: latLng[0]};
-    console.log(coord);
+    console.log('coord', coord);
+    axios
+      .post('http://10.0.2.2:3002/rides/driverlocation', {
+        latitude: latitude,
+        longitude: longitude,
+        driverUserId: route.params.userid,
+      })
+      .then(() => {
+        alert('Sucessfully added!');
+        navigation.navigate({
+          name: 'FoodScreen',
+          params: {
+            fromlatitude: latitude,
+            fromlongitude: longitude,
+            userid: route.params?.userid,
+          },
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     return coord;
   };
 
