@@ -40,17 +40,7 @@ export default function FoodScreen({navigation, route}) {
   const [tolatitude, settLatitude] = useState(route.params?.tolatitude);
   const [tolongitude, settLongitude] = useState(route.params?.tolongitude);
   // const {navigate} = this.props.navigation;
-  let carData = [
-    {
-      value: 'Suzuki Alto',
-    },
-    {
-      value: 'Toyota Corolla',
-    },
-    {
-      value: 'Suzuki Wagon R',
-    },
-  ];
+
   useEffect(() => {
     axios.get(`http://10.0.2.2:3002/driver/${uid}`).then(res => {
       const response = res.data;

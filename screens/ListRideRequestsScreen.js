@@ -3,47 +3,23 @@ import {useEffect} from 'react';
 import {View, Text, TouchableOpacity, FlatList} from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
-
-const availableRides = [
-  {
-    id: 1,
-    name: 'John Doe',
-    fare: 'Honda Civic',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
-  },
-  {
-    id: 2,
-    name: 'Jane Doe',
-    fare: 'Toyota Camry',
-    long: '67.0977780221569',
-    lat: '24.875933788119013',
-  },
-  {
-    id: 3,
-    name: 'Musaib ahmed Razzaqui',
-    fare: 'Ford Fusion',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
-  },
-  {
-    id: 4,
-    name: 'Faizan Mukhtar',
-    fare: 'Chevrolet Cruze',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
-  },
-  {
-    id: 5,
-    name: 'Affan ul Haq',
-    fare: 'Suzuki FX',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
-  },
-];
-
+import axios from 'axios';
+import Background from '../components/Background';
+import BackButton from '../components/BackButton';
+const getRidedata = response => {
+  console.log('hereeee', response);
+  let rData = response;
+  // console.log('Car data', carData);
+  const keys = Object.keys(rData);
+  console.log('Keys', keys);
+  return keys.map(key => {
+    let rideData = rData[key];
+    // console.log(caData);
+    return {key: key, ...rideData};
+  });
+};
 const ListRideRequestsScreen = ({navigation, route}) => {
-  const [rides, setRides] = useState(availableRides);
+  const [rides, setRides] = useState([]);
   const [latitude, setlatitude] = React.useState('0.0');
   const [longitude, setlongitude] = React.useState('0.0');
   useEffect(() => {
@@ -51,20 +27,27 @@ const ListRideRequestsScreen = ({navigation, route}) => {
       setlatitude(info.coords.latitude);
       setlongitude(info.coords.longitude);
     });
+    // console.log('ssssssssss');
+    axios
+      .get(`http://10.0.2.2:3002/rides/riderequests/${route.params?.userid}`)
+      .then(res => {
+        const response = res.data;
+        if (response.error == 0) {
+          console.log(res.data.data);
+          setRides(getRidedata(response.data));
+        } else {
+          console.log('error');
+        }
+      });
   }, []);
-  const getLocation = async data => {
-    console.log(data.id);
-    // const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${data.location}.json?types=place%2Cpostcode%2Caddress&limit=1&access_token=pk.eyJ1IjoibXVzYWliYWhtZWRyYXp6YXF1aSIsImEiOiJjbGFud3ZlemEwMGRiM25sc2dlbW1vMmRxIn0.426C1RaWyDpDv9XJ8Odigg`;
-    // const response = await fetch(endpoint);
-    // //console.log(endpoint);
-    // const results = await response.json();
-    // console.log(results);
-  };
+
   return (
-    <View>
+    <Background>
+      <BackButton goBack={navigation.goBack} />
+      {console.log(rides)}
       <FlatList
         data={rides}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.key.toString()}
         renderItem={({item}) => (
           <View style={{padding: 10}}>
             <TouchableOpacity>
@@ -76,12 +59,29 @@ const ListRideRequestsScreen = ({navigation, route}) => {
                     marginTop: 20,
                     color: 'black',
                   }}>
-                  {item.name}
+                  Passenger Name: {item.firstName} {item.lastName}
                 </Text>
                 {/* {getLocation(rides[item.id - 1])} */}
                 <Card.Content>
-                  <Title>Pickup from {item.name}</Title>
-                  <Text>Fare willing to pay {item.fare} Rupees</Text>
+                  <Title>Pickup from: {item.location.slice(0, 28)}</Title>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      marginLeft: 0,
+                      marginTop: 10,
+                      color: 'black',
+                    }}>
+                    Fare willing to pay: {item.userFare} Rupees
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      marginLeft: 0,
+                      marginTop: 10,
+                      color: 'black',
+                    }}>
+                    You requested: {item.driverFare} Rupees
+                  </Text>
                 </Card.Content>
                 {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
                 <Card.Actions>
@@ -97,10 +97,15 @@ const ListRideRequestsScreen = ({navigation, route}) => {
                       navigation.navigate({
                         name: 'NavigationScreen',
                         params: {
-                          long: item.long,
-                          lat: item.lat,
-                          currLong: longitude,
-                          currLat: latitude,
+                          driverfromlatitude: item.dLatitude,
+                          driverfromlongitude: item.drLongitude,
+                          driverfromlocation: item.DriverfLocation,
+                          drivertolatitude: item.to_latitude,
+                          drivertolongitude: item.to_longitude,
+                          drivertolocation: item.to_location,
+                          passengerlatitude: item.latitude,
+                          passengerlongitude: item.longitude,
+                          passengerlocation: item.location,
                         },
                       });
                     }}>
@@ -113,7 +118,7 @@ const ListRideRequestsScreen = ({navigation, route}) => {
           </View>
         )}
       />
-    </View>
+    </Background>
   );
 };
 //  import { View, Text } from 'react-native'

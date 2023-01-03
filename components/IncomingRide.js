@@ -12,7 +12,7 @@ const data = [
   },
 ];
 
-const navOptions = () => {
+const navOptions = ({uid}) => {
   const Navigation = useNavigation();
 
   return (
@@ -26,7 +26,14 @@ const navOptions = () => {
         horizontal
         renderItem={({item}) => (
           <TouchableOpacity
-            onPress={() => Navigation.navigate(item.screen)}
+            onPress={() =>
+              Navigation.navigate({
+                name: item.screen,
+                params: {
+                  userid: uid,
+                },
+              })
+            }
             style={tw`p-3 m-3 w-85 rounded-sm shadow-sm `}>
             <View>
               <Image

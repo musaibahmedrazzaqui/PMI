@@ -21,11 +21,30 @@ MapboxGL.setAccessToken(
 const FromScreen = ({navigation, route}) => {
   const [latitude, setlatitude] = React.useState(0.0);
   const [longitude, setlongitude] = React.useState(0.0);
+  const [places, setPlaces] = useState('');
+  const [did, setDid] = useState();
   useEffect(() => {
     Geolocation.getCurrentPosition(info => {
       setlatitude(info.coords.latitude);
       setlongitude(info.coords.longitude);
+      console.log('uidFrom Screen' + route.params?.userid);
     });
+    axios
+      .get(`http://10.0.2.2:3002/driver/${route.params?.userid}`)
+      .then(res => {
+        // console.log('userid', route.);
+        const response = res.data.error;
+
+        console.log(response);
+        if (response == 0) {
+          console.log('driverid From Screen' + res.data.data[0].DriverID);
+          setDid(res.data.data[0].DriverID);
+          let drid = res.data.data[0].DriverID;
+        } else {
+          setDid(0);
+          // setCheck(false);
+        }
+      });
   }, []);
   const [textTwo, setValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -34,13 +53,13 @@ const FromScreen = ({navigation, route}) => {
     var newText = event.nativeEvent.text;
     var str = newText.toString();
     setValue(str);
-    console.log(str);
+    // console.log(str);
 
     const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoibXVzYWliYWhtZWRyYXp6YXF1aSIsImEiOiJjbGFud3ZlemEwMGRiM25sc2dlbW1vMmRxIn0.426C1RaWyDpDv9XJ8Odigg`;
     const response = await fetch(endpoint);
     //console.log(endpoint);
     const results = await response.json();
-    console.log(results);
+    // console.log(results);
     setSuggestions(results?.features);
     console.log(suggestions);
   };
@@ -49,11 +68,12 @@ const FromScreen = ({navigation, route}) => {
   const coordinate = [longitude, latitude];
   const onButtonPressed = () => {
     //console.log(text);
+    setPlaces(textTwo);
     const sLower = textTwo.toLowerCase();
     console.log('slower', sLower);
     let srcCoord = null;
-    srcCoord = getCoordinates(sLower);
-    console.log('srcCoord', srcCoord);
+    getCoordinates(sLower);
+    // console.log('srcCoord', srcCoord);
   };
 
   const getCoordinates = async name => {
@@ -71,7 +91,7 @@ const FromScreen = ({navigation, route}) => {
 
     // axios.get
     try {
-      console.log('before axiosos');
+      // console.log('before axiosos');
       res = await axios.get(req);
       //console.log(await res);
     } catch (e) {
@@ -83,34 +103,30 @@ const FromScreen = ({navigation, route}) => {
     }
 
     const place = await res.data;
-    console.log('place', place);
+    // console.log('place', place);
     if (!place.features.length) {
       // check whether the coordinates are returned for the Place
-      console.log('features : ' + place.features);
+      console.log('features : ' + place.features[0].geometry);
       return;
     }
 
     const latLng = place.features[0].geometry.coordinates;
     setlatitude(latLng[1]);
     setlongitude(latLng[0]);
+    // setPlace(place.features[0].place_name);
     coord = {lat: latLng[1], lng: latLng[0]};
     console.log('coord', coord);
+    console.log('places' + textTwo);
     axios
       .post('http://10.0.2.2:3002/rides/driverlocation', {
-        latitude: latitude,
-        longitude: longitude,
+        latitude: latLng[1],
+        longitude: latLng[0],
         driverUserId: route.params.userid,
+        location: textTwo,
+        driverID: did,
       })
       .then(() => {
         alert('Sucessfully added!');
-        navigation.navigate({
-          name: 'FoodScreen',
-          params: {
-            fromlatitude: latitude,
-            fromlongitude: longitude,
-            userid: route.params?.userid,
-          },
-        });
       })
       .catch(function (error) {
         console.log(error);
@@ -173,6 +189,18 @@ const FromScreen = ({navigation, route}) => {
         <LocationButton mode="contained" onPress={onButtonPressed}>
           Save
         </LocationButton>
+        {/* <LocationButton
+          mode="contained"
+          onPress={navigation.navigate({
+            name: 'FoodScreen',
+            params: {
+              fromlatitude: latitude,
+              fromlongitude: longitude,
+              userid: route.params?.userid,
+            },
+          })}>
+          Done
+        </LocationButton> */}
       </View>
     </View>
   );

@@ -74,7 +74,7 @@ function HomeScreen({navigation, route}) {
           </View>
           {console.log(userID)}
           <NavOptions uid={userID} />
-          {checkone === true && <IncomingRide />}
+          {checkone === true && <IncomingRide uid={userID} />}
           {/* //Check if driver is registered only then show this component */}
 
           {check === false && <SecondNavOptions uid={userID} />}

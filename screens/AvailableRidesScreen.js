@@ -204,6 +204,18 @@
 //   },
 // });
 // export default withTheme(AvailableRidesScreen);
+const getRidedata = response => {
+  console.log('hereeee', response);
+  let rData = response;
+  // console.log('Car data', carData);
+  const keys = Object.keys(rData);
+  console.log('Keys', keys);
+  return keys.map(key => {
+    let rideData = rData[key];
+    // console.log(caData);
+    return {key: key, ...rideData};
+  });
+};
 import React, {useState} from 'react';
 import {useEffect} from 'react';
 import {View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
@@ -215,83 +227,28 @@ import RNRestart from 'react-native-restart';
 import axios from 'axios';
 // import FareNegotiation from './FareNegotiation';
 
-const availableRides = [
-  {
-    id: 1,
-    name: 'John Doe',
-    fare: 'Honda Civic',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
-    show: false,
-  },
-  {
-    id: 2,
-    name: 'Jane Doe',
-    fare: 'Toyota Camry',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
-    show: false,
-  },
-  {
-    id: 3,
-    name: 'Musaib ahmed Razzaqui',
-    fare: 'Ford Fusion',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
-    show: false,
-  },
-  {
-    id: 4,
-    name: 'Faizan Mukhtar',
-    fare: 'Chevrolet Cruze',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
-    show: false,
-  },
-  {
-    id: 5,
-    name: 'Affan ul Haq',
-    fare: 'Suzuki FX',
-    long: '67.1003706246515',
-    lat: '24.945828086771098',
-    show: false,
-  },
-];
-
 const AvailableRidesScreen = ({navigation, route}) => {
-  const [rides, setRides] = useState(availableRides);
+  const [rides, setRides] = useState([]);
   const [show, setShow] = useState(false);
   const [uid, setUid] = useState(route.params?.userid);
   const [did, setdId] = useState();
   const [latitude, setlatitude] = React.useState('0.0');
   const [longitude, setlongitude] = React.useState('0.0');
+
   useEffect(() => {
     Geolocation.getCurrentPosition(info => {
       setlatitude(info.coords.latitude);
       setlongitude(info.coords.longitude);
     });
-    axios.get(`http://10.0.2.2:3002/driver/${uid}`).then(res => {
-      console.log('userid', uid);
-      const response = res.data.error;
-
-      console.log(response);
-      if (response == 0) {
-        console.log('driverid' + res.data.data[0].DriverID);
-        setdId(res.data.data[0].DriverID);
-        let drid = res.data.data[0].DriverID;
-        // setCheck(true);
-        axios.get(`http://10.0.2.2:3002/rides/${drid}`).then(res => {
-          console.log('DID ', drid);
-          const response = res.data;
-          if (response.error == 0) {
-            console.log(response.data);
-          } else {
-            console.log('error caught');
-          }
-        });
+    console.log('ssssssssss');
+    axios.get(`http://10.0.2.2:3002/rides/getrides/0`).then(res => {
+      console.log('DID ');
+      const response = res.data;
+      if (response.error == 0) {
+        console.log(res.data.data);
+        setRides(getRidedata(response.data));
       } else {
         console.log('error');
-        // setCheck(false);
       }
     });
   }, []);
@@ -306,9 +263,10 @@ const AvailableRidesScreen = ({navigation, route}) => {
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
+      {console.log(rides)}
       <FlatList
         data={rides}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.key.toString()}
         renderItem={({item}) => (
           <View style={{padding: 10}}>
             <TouchableOpacity>
@@ -324,8 +282,15 @@ const AvailableRidesScreen = ({navigation, route}) => {
                 </Text>
                 {/* {getLocation(rides[item.id - 1])} */}
                 <Card.Content>
-                  <Title>Pickup from {item.name}</Title>
-                  <Text>Fare willing to pay {item.fare} Rupees</Text>
+                  <Title>Pickup from {item.location.slice(0, 30)}</Title>
+                  <Title>Going To {item.to_location.slice(0, 30)}</Title>
+                  <Text>Fare willing to pay {item.fareEntered} Rupees</Text>
+                  <Text>
+                    Car Taking:{' '}
+                    {item.Manufacturer + ' ' + item.Model + ' ' + item.Year}
+                  </Text>
+                  <Text></Text>
+                  <Text>Number of Passengers: {item.numberOfPeople}</Text>
                 </Card.Content>
                 {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
                 <Card.Actions>
@@ -334,7 +299,10 @@ const AvailableRidesScreen = ({navigation, route}) => {
                       navigation.navigate({
                         name: 'FareNegotiation',
                         params: {
-                          fare: item.fare,
+                          rides: item,
+                          latitude: latitude,
+                          longitude: longitude,
+                          userid: uid,
                         },
                       });
                     }}>
