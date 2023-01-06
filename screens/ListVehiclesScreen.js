@@ -1,119 +1,158 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
+import {useEffect} from 'react';
 import {
-  StyleSheet,
-  Text,
   View,
+  Text,
   TouchableOpacity,
   Image,
-  ScrollView,
+  FlatList,
+  StyleSheet,
 } from 'react-native';
-import Color from '../constants/color';
-import Font from '../constants/font';
-import Header from '../components/Header';
-import {Ionicons} from '@expo/vector-icons';
+import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
+import Geolocation from '@react-native-community/geolocation';
+import Background from '../components/Background';
+import BackButton from '../components/BackButton';
+import RNRestart from 'react-native-restart';
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+// import FareNegotiation from './FareNegotiation';
 
-class ProductDetialsScreen extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Header backbutton={true} title="Sugar" />
-        <ScrollView>
-          <Image
-            style={styles.image}
-            source={{
-              uri: 'https://www.dailyqudrat.pk/wp-content/uploads/2020/01/09-3-11.jpg',
-            }}
-          />
-          <View style={{padding: 20}}>
-            <Text style={styles.txtTitle}>Fine Grain Sugar</Text>
-            <Text style={styles.txtPrice}>$20.00 per kg</Text>
-            <Text style={styles.txtDescription}>
-              Granulated sugar has had all of the naturally present molasses
-              refined out of it. It is the sugar that is most commonly used in
-              baking. The fine crystals in granulated sugar don't cake together,
-              which makes it perfect for measuring, sprinkling onto food and
-              dissolving into drinks.
-            </Text>
-          </View>
+const availableRides = [
+  {
+    id: 1,
+    name: 'John Doe',
+    fare: 'Honda Civic',
+    reg_no: 'AAA-000',
+    show: false,
+  },
+  {
+    id: 2,
+    name: 'Jane Doe',
+    fare: 'Toyota Camry',
+    reg_no: 'AAA-001',
+    show: false,
+  },
+  {
+    id: 3,
+    name: 'Musaib ahmed Razzaqui',
+    fare: 'Ford Fusion',
+    reg_no: 'AAA-003',
+    show: false,
+  },
+  {
+    id: 4,
+    name: 'Faizan Mukhtar',
+    fare: 'Chevrolet Cruze',
+    reg_no: 'AAA-002',
+    show: false,
+  },
+  {
+    id: 5,
+    name: 'Affan ul Haq',
+    fare: 'Suzuki FX',
+    reg_no: 'AAA-005',
+    show: false,
+  },
+];
+const getRidedata = response => {
+  console.log('hereeee', response);
+  let rData = response;
+  // console.log('Car data', carData);
+  const keys = Object.keys(rData);
+  console.log('Keys', keys);
+  return keys.map(key => {
+    let rideData = rData[key];
+    // console.log(caData);
+    return {key: key, ...rideData};
+  });
+};
+const ListVehiclesScreen = ({navigation, route}) => {
+  const [vehices, setVehicles] = useState([]);
+  const [show, setShow] = useState(false);
+  const [uid, setUid] = useState(route.params?.userid);
+  const [did, setdId] = useState();
+  const [latitude, setlatitude] = React.useState('0.0');
+  const [longitude, setlongitude] = React.useState('0.0');
+  const Navigation = useNavigation();
+  useEffect(() => {
+    Geolocation.getCurrentPosition(info => {
+      setlatitude(info.coords.latitude);
+      setlongitude(info.coords.longitude);
+    });
+    axios.get(`http://10.0.2.2:3002/vehicle/getvehicles/${uid}`).then(res => {
+      const response = res.data;
+      // console.log(res.data);
+      setVehicles(getRidedata(response.data));
+      //  setdId(response.data[0].DriverID);
+    });
+  }, []);
 
-          <View style={styles.bottonContainer}>
-            <View style={{flexDirection: 'column', paddingVertical: 20}}>
-              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <View style={styles.itemButton}>
-                  <Text style={styles.itemQuantity(false)}>-</Text>
-                </View>
-                <Text style={styles.itemQuantity(true)}>1 KG</Text>
-                <View style={styles.itemButton}>
-                  <Text style={styles.itemQuantity(false)}>+</Text>
-                </View>
-              </View>
-              <TouchableOpacity
-                style={styles.buttonContainer}
-                onPress={() => {
-                  this.props.navigation.navigate('Cart');
-                }}>
-                <Text style={styles.buttonText}>Add to Cart</Text>
-              </TouchableOpacity>
-            </View>
+  return (
+    <Background>
+      <BackButton goBack={navigation.goBack} />
+      <FlatList
+        data={vehices}
+        keyExtractor={item => item.key.toString()}
+        renderItem={({item}) => (
+          <View style={{padding: 10}}>
+            <TouchableOpacity>
+              <Card>
+                <Text
+                  style={{
+                    fontSize: 25,
+                    marginLeft: 18,
+                    marginTop: 20,
+                    color: 'black',
+                  }}>
+                  {item.Manufacturer} {item.Model} {item.Year}
+                </Text>
+                <Card.Content>
+                  <Title>Vehicle Owner: {item.OwnerName}</Title>
+                  <Text>Registration Number: {item.VehicleNumber}</Text>
+                </Card.Content>
+              </Card>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-      </View>
-    );
-  }
-}
+        )}
+      />
+      {/* {console.log('listvehicles did' + vehices[0].DriverID)} */}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() =>
+          Navigation.navigate({
+            name: 'RegisterVehicleScreen',
+            params: {
+              driverid: vehices[0].DriverID,
+              userid: uid,
+            },
+          })
+        }
+        style={styles.touchableOpacityStyle}>
+        <Image
+          source={{
+            uri: 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png',
+          }}
+          style={styles.floatingButtonStyle}
+        />
+      </TouchableOpacity>
+    </Background>
+  );
+};
+export default ListVehiclesScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Color.white,
-  },
-  image: {
-    height: 300,
-    width: '100%',
-  },
-  txtTitle: {
-    fontFamily: Font.FONT_REGULAR,
-    fontSize: 25,
-  },
-  txtPrice: {
-    fontFamily: Font.FONT_REGULAR,
-    fontSize: 20,
-  },
-  txtDescription: {fontFamily: Font.FONT_REGULAR, fontSize: 15},
-  itemButton: {
-    backgroundColor: Color.primary,
-    height: 30,
-    width: 30,
-    borderColor: Color.black,
-    borderRadius: 10,
+  touchableOpacityStyle: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    right: 30,
+    bottom: 30,
   },
-  itemQuantity: number => ({
-    color: number ? Color.black : Color.white,
-    marginHorizontal: number ? 10 : 0,
-    fontFamily: Font.FONT_REGULAR,
-    fontSize: 18,
-  }),
-  bottonContainer: {
-    backgroundColor: Color.backgroundColor,
-    borderColor: Color.black,
-    justifyContent: 'center',
-    paddingHorizontal: 40,
-  },
-  buttonContainer: {
-    borderColor: Color.primary,
-    borderWidth: 1,
-    padding: 15,
-    borderRadius: 50,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonText: {
-    color: Color.primary,
-    fontFamily: Font.FONT_REGULAR,
-    fontSize: 18,
+  floatingButtonStyle: {
+    resizeMode: 'contain',
+    width: 50,
+    height: 50,
   },
 });
-
-export default ProductDetialsScreen;

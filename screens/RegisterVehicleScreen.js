@@ -11,17 +11,41 @@ import BackButton from '../components/BackButton';
 import {theme} from '../core/theme';
 // import { Dropdown } from "react-native-material-dropdown";
 import {SelectList} from 'react-native-dropdown-select-list';
-
-export default function RegisterVehicleScreen({navigation}) {
+import axios from 'axios';
+export default function RegisterVehicleScreen({navigation, route}) {
   const [vehicle, setVehicle] = useState({value: '', error: ''});
-  const [engine, setEngine] = useState({value: '', error: ''});
+
   const [province, setProvince] = useState({value: '', error: ''});
   const [owner, setOwner] = useState({value: '', error: ''});
   const [manufacturer, setManufacturer] = useState({value: '', error: ''});
   const [model, setModel] = useState({value: '', error: ''});
   const [year, setYear] = useState({value: '', error: ''});
   const [enginecc, setEnginecc] = useState({value: '', error: ''});
+  console.log(route.params?.userid);
   const onSavePressed = () => {
+    axios
+      .post('http://10.0.2.2:3002/vehicle/register', {
+        VehicleNumber: vehicle.value,
+        RegistrationProvince: province.value,
+        OwnerName: owner.value,
+        Manufacturer: manufacturer.value,
+        Model: model.value,
+        Year: year.value,
+        EngineCC: enginecc.value,
+        DriverID: route.params.driverid,
+      })
+      .then(() => {
+        alert('Sucessfully registered!');
+        navigation.navigate({
+          name: 'HomeScreen',
+          params: {
+            userid: route.params.userid,
+          },
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     navigation.reset({
       index: 0,
       routes: [{name: 'HomeScreen'}],
@@ -47,12 +71,7 @@ export default function RegisterVehicleScreen({navigation}) {
           value={vehicle.value}
           onChangeText={text => setVehicle({value: text, error: ''})}
         />
-        <TextInput
-          label="Enter Engine Number"
-          returnKeyType="done"
-          value={engine.value}
-          onChangeText={text => setEngine({value: text, error: ''})}
-        />
+
         <TextInput
           label="Enter Registration Province"
           returnKeyType="done"

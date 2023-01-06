@@ -15,11 +15,31 @@ import NavigationComponent from './NavigationComponent';
 import {PermissionsAndroid} from 'react-native';
 
 const NavigationScreen = ({navigation, route}) => {
+  //  driverfromlatitude: item.dLatitude,
+  //                         driverfromlongitude: item.drLongitude,
+  //                         driverfromlocation: item.DriverfLocation,
+  //                         drivertolatitude: item.to_latitude,
+  //                         drivertolongitude: item.to_longitude,
+  //                         drivertolocation: item.to_location,
+  //                         passengerlatitude: item.latitude,
+  //                         passengerlongitude: item.longitude,
+  //                         passengerlocation: item.location,
   const isDarkMode = useColorScheme() === 'dark';
-  const lat = parseFloat(route.params.lat);
-  const long = parseFloat(route.params.long);
-  const currLat = parseFloat(route.params.currLat);
-  const currLong = parseFloat(route.params.currLong);
+  const driverfromlatitude = parseFloat(route.params.driverfromlatitude);
+  const driverfromlongitude = parseFloat(route.params.driverfromlongitude);
+  const driverfromlocation = route.params.driverfromlocation;
+  const drivertolatitude = parseFloat(route.params.drivertolatitude);
+  const drivertolongitude = parseFloat(route.params.drivertolongitude);
+  const drivertolocation = route.params.drivertolocation;
+  const passengerlatitude = parseFloat(route.params.passengerlatitude);
+  const passengerlongitude = parseFloat(route.params.passengerlongitude);
+  const passengerlocation = route.params.passengerlocation;
+  console.log(driverfromlatitude);
+  console.log(driverfromlocation);
+  console.log(drivertolatitude);
+  console.log(drivertolocation);
+  console.log(passengerlatitude);
+  console.log(passengerlocation);
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1,
@@ -32,8 +52,8 @@ const NavigationScreen = ({navigation, route}) => {
         await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           {
-            title: 'Example App',
-            message: 'Example App access to your location ',
+            title: 'Pool Me In App',
+            message: 'Pool Me In access to your location ',
           },
         );
       } catch (err) {
@@ -58,8 +78,12 @@ const NavigationScreen = ({navigation, route}) => {
         />
       </TouchableOpacity>
       <NavigationComponent
-        origin={[currLong, currLat]}
-        destination={[long, lat]}
+        origin={[driverfromlongitude, driverfromlatitude]}
+        destination={[passengerlongitude, passengerlatitude]}
+        driver_to={[drivertolongitude, drivertolatitude]}
+        driverfromlocation={driverfromlocation}
+        drivertolocation={drivertolocation}
+        passengerlocation={passengerlocation}
       />
       {/* {console.log(currLongitude + ',' + currLatitude)} */}
     </SafeAreaView>

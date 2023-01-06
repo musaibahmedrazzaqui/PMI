@@ -11,6 +11,7 @@ import ReferOptions from '../components/ReferOptions';
 
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+import {useRef} from 'react';
 
 function HomeScreen({navigation, route}) {
   const Navigation = useNavigation();
@@ -18,6 +19,7 @@ function HomeScreen({navigation, route}) {
   const [checkone, setCheckone] = useState(false);
   const [userID, setUserID] = useState('');
   const [did, setdId] = useState();
+  const isMounted = useRef(false);
   useEffect(() => {
     setUserID(route.params?.userid);
     axios
@@ -44,9 +46,12 @@ function HomeScreen({navigation, route}) {
         } else {
           setdId(0);
           setCheck(false);
+          setCheckone(false);
         }
       });
+    // };
 
+    // rLkSb2QhQHgNc7ymoBQhFNy7N2Sz4FMD4c();
     // console.log(route.params?.userid);
   }, []);
   return (
@@ -60,7 +65,14 @@ function HomeScreen({navigation, route}) {
               color={'gray'}
               type="material"
               size={35}
-              onPress={() => Navigation.navigate('SettingsScreen')}
+              onPress={() =>
+                navigation.navigate({
+                  name: 'SettingsScreen',
+                  params: {
+                    userid: userID,
+                  },
+                })
+              }
             />
             <Text style={tw`text-2xl font-bold`}>Pool Me In</Text>
             <Icon

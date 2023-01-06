@@ -14,6 +14,7 @@ import FromScreen from './screens/FromScreen';
 import ToScreen from './screens/ToScreen';
 import RegisterVehicleScreen from './screens/RegisterVehicleScreen';
 import RegisterDriverScreen from './screens/RegisterDriverScreen';
+import ListVehiclesScreen from './screens/ListVehiclesScreen';
 import NavigationScreen from './screens/NavigationScreen';
 import ListRideRequestsScreen from './screens/ListRideRequestsScreen';
 import FareNegotiation from './screens/FareNegotiation';
@@ -110,6 +111,13 @@ export default function App() {
             <Stack.Screen
               name="RegisterVehicleScreen"
               component={RegisterVehicleScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="ListVehiclesScreen"
+              component={ListVehiclesScreen}
               options={{
                 headerShown: false,
               }}

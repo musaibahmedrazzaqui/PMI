@@ -18,9 +18,12 @@ import {
   Text,
   View,
 } from 'react-native';
+import {useState} from 'react';
 const SettingsScreen = props => {
   const Navigation = useNavigation();
   const {theme} = props;
+  console.log(props.route.params.userid);
+  const [userid, setuserid] = useState(props.route.params.userid);
   return (
     <ScreenContainer
       style={styles.screenContainerJb}
@@ -74,11 +77,19 @@ const SettingsScreen = props => {
         </TouchableOpacity>
       </Container>
       <Container useThemeGutterPadding={true} elevation={0}>
-        <Touchable
+        <TouchableOpacity
           style={StyleSheet.flatten([
             styles.touchableOk,
             {borderColor: theme.colors.divider},
-          ])}>
+          ])}
+          onPress={() =>
+            Navigation.navigate({
+              name: 'ListVehiclesScreen',
+              params: {
+                userid: userid,
+              },
+            })
+          }>
           <View style={styles.viewKs}>
             <Text style={theme.typography.body1}>See your Vehicles</Text>
             <Icon
@@ -88,7 +99,7 @@ const SettingsScreen = props => {
               name="MaterialIcons/account-circle"
             />
           </View>
-        </Touchable>
+        </TouchableOpacity>
         <Touchable
           style={StyleSheet.flatten([
             styles.touchableOm,

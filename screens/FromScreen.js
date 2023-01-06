@@ -56,14 +56,20 @@ const FromScreen = ({navigation, route}) => {
     // console.log(str);
 
     const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoibXVzYWliYWhtZWRyYXp6YXF1aSIsImEiOiJjbGFud3ZlemEwMGRiM25sc2dlbW1vMmRxIn0.426C1RaWyDpDv9XJ8Odigg`;
-    const response = await fetch(endpoint);
+    let response;
+    try {
+      response = await fetch(endpoint);
+      const results = await response.json();
+      setSuggestions(results?.features);
+      console.log(suggestions);
+    } catch (error) {
+      console.log(error);
+    }
     //console.log(endpoint);
-    const results = await response.json();
+    // const results = await response.json();
     // console.log(results);
-    setSuggestions(results?.features);
-    console.log(suggestions);
   };
-  const [text, onChangeText] = useState('');
+  // const [text, onChangeText] = useState('');
 
   const coordinate = [longitude, latitude];
   const onButtonPressed = () => {
@@ -170,20 +176,20 @@ const FromScreen = ({navigation, route}) => {
             visible={true}
             onUpdate={onUserLocationUpdate}
           /> */}
-
+          {console.log(longitude)}
+          {console.log(latitude)}
           <MapboxGL.Camera
             zoomLevel={15}
             centerCoordinate={[longitude, latitude]}
           />
-          <View>
-            <MapboxGL.PointAnnotation
-              anchor={{x: 0.5, y: 0.5}}
-              coordinate={[longitude, latitude]}>
-              <View>
-                <Entypo name="location-pin" size={24} color="black" />
-              </View>
-            </MapboxGL.PointAnnotation>
-          </View>
+          <MapboxGL.PointAnnotation
+            anchor={{x: 0.5, y: 0.5}}
+            coordinate={[longitude, latitude]}>
+            <View>
+              <Entypo name="location-pin" size={24} color="black" />
+            </View>
+          </MapboxGL.PointAnnotation>
+
           {/* </MapboxGL.Camera> */}
         </MapboxGL.MapView>
         <LocationButton mode="contained" onPress={onButtonPressed}>

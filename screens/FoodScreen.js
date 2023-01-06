@@ -47,7 +47,7 @@ export default function FoodScreen({navigation, route}) {
       // console.log(response.data[0].DriverID);
       setdId(response.data[0].DriverID);
     });
-    axios.get(`http://10.0.2.2:3002/vehicle/2`).then(res => {
+    axios.get(`http://10.0.2.2:3002/vehicle/getvehicles/${uid}`).then(res => {
       const response = res.data;
       // console.log(res.data);
       setCars(response.data);

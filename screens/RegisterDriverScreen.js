@@ -51,7 +51,7 @@ export default function FoodScreen({navigation, route}) {
       .then(() => {
         alert('Sucessfully registered!');
         navigation.navigate({
-          name: 'HomeScreen',
+          name: 'RegisterVehicleScreen',
           params: {
             userid: uid,
           },
